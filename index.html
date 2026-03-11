@@ -27,7 +27,7 @@
     top: 0;
     z-index: 10;
     background: #ffffff;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e000;
     padding: 12px 20px;
     display: flex;
     align-items: center;
@@ -36,7 +36,7 @@
   }
   body.dark header {
     background: #1a1a1a;
-    border-bottom-color: #333333;
+    border-bottom-color: #33333300;
   }
 
   h1 {
@@ -66,13 +66,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 4px 10px;
+    padding: 4px 0;
+    width: 36px;
+    min-width: 36px;
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.04em;
     font-family: inherit;
     transition: background 0.12s, color 0.12s;
     white-space: nowrap;
+    text-align: center;
   }
   body.dark .size-btn {
     border-color: #333333;
@@ -123,7 +126,7 @@
   }
 
   .category {
-    margin-bottom: 32px;
+    margin-bottom: 100px;
   }
 
   .category-title {
@@ -209,11 +212,11 @@
     border-radius: 6px 0 0 6px;
   }
 
-  #nav-panel { width: 160px; }
+  #nav-panel { width: 170px; }
 
   .nav-label {
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 400;
     white-space: nowrap;
     color: #888888;
     opacity: 0;
@@ -221,8 +224,27 @@
     overflow: hidden;
     flex: 1;
     text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 6px;
     transition: opacity 0.22s ease, width 0.22s ease, color 0.15s ease;
     pointer-events: none;
+  }
+  .nav-label-emoji {
+    font-size: 14px;
+    line-height: 1;
+    width: 16px;
+    text-align: center;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0px 14px 0px 8px;
+  }
+  .nav-label-text {
+    line-height: 1.4;
+    display: inline-flex;
+    align-items: center;
   }
   #nav-panel.open .nav-label {
     opacity: 1;
@@ -240,7 +262,7 @@
   }
 
   /* Active state */
-  .nav-row.active .nav-label { color: rgb(39, 131, 222); }
+  .nav-row.active .nav-label { color: rgb(39, 131, 222); font-weight: 500; }
   .nav-row.active .nav-line  { background: rgb(39, 131, 222); }
 
   /* Hovered — darker in light, lighter in dark */
@@ -283,6 +305,80 @@
     to { transform: rotate(360deg); }
   }
 
+  /* ── Favourites ── */
+
+  /* Star badge — appears on right-click */
+  #fav-badge {
+    position: fixed;
+    width: 34px;
+    height: 34px;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    pointer-events: none;
+    visibility: hidden;
+    z-index: 200;
+    transition: transform 0.12s ease;
+  }
+  body.dark #fav-badge {
+    background: #2a2a2a;
+    border-color: #444444;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  }
+  #fav-badge.open {
+    pointer-events: auto;
+    visibility: visible;
+    animation: fav-badge-pop 0.14s cubic-bezier(0.25, 0, 0, 1.4) forwards;
+  }
+  @keyframes fav-badge-pop {
+    from { transform: scale(0.7); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+  }
+  #fav-badge svg {
+    width: 15px; height: 15px;
+    stroke: #aaaaaa;
+    fill: none;
+    flex-shrink: 0;
+    pointer-events: none;
+    transition: stroke 0.1s, fill 0.1s;
+  }
+  #fav-badge.is-fav svg {
+    stroke: #f5c418;
+    fill: #f5c418;
+  }
+  #fav-badge:hover { transform: scale(1.08); }
+
+  /* Drag states for fav cells */
+  .emoji-cell.fav-dragging {
+    opacity: 0.3;
+    cursor: grabbing !important;
+  }
+  .emoji-cell.fav-drag-over {
+    background: rgb(39, 131, 222);
+    border-radius: 8px;
+  }
+  .emoji-grid.fav-is-dragging .emoji-cell:not(.fav-dragging) {
+    cursor: grab;
+  }
+
+  /* Fav category subtle indicator */
+  .category-title.fav-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .category-title.fav-title svg {
+    width: 10px; height: 10px;
+    stroke: #f5c418;
+    fill: #f5c418;
+    flex-shrink: 0;
+  }
+
   /* Toast */
   #toast {
     position: fixed;
@@ -305,24 +401,219 @@
     opacity: 1;
     transform: translateX(-50%) translateY(0);
   }
+  /* ── Sync button ── */
+  #sync-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+  body.dark #sync-btn { color: #f0f0f0; }
+  #sync-btn:hover { background: #f5f5f5; }
+  body.dark #sync-btn:hover { background: #242424; }
+  #sync-btn svg { width: 18px; height: 18px; }
+  #sync-btn.syncing svg { animation: spin 0.8s linear infinite; }
+
+  /* ── Sync modal ── */
+  #sync-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 300;
+    backdrop-filter: blur(2px);
+  }
+  #sync-overlay.open { display: block; }
+
+  #sync-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    z-index: 301;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 18px;
+    padding: 24px 24px 20px;
+    width: 340px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+    transition: transform 0.15s ease, opacity 0.15s ease;
+    opacity: 0;
+  }
+  body.dark #sync-modal {
+    background: #222222;
+    border-color: #333333;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+  }
+  #sync-modal.open {
+    display: block;
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+
+  #sync-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+  }
+  body.dark #sync-title { color: #f0f0f0; }
+
+  #sync-desc {
+    font-size: 12px;
+    color: #888888;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+  body.dark #sync-desc { color: #666666; }
+
+  #sync-token-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  #sync-token-input {
+    flex: 1;
+    height: 34px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 0 10px;
+    font-size: 13px;
+    font-family: inherit;
+    background: #f7f7f7;
+    color: #1a1a1a;
+    outline: none;
+    transition: border-color 0.12s;
+  }
+  body.dark #sync-token-input {
+    background: #2a2a2a;
+    border-color: #383838;
+    color: #f0f0f0;
+  }
+  #sync-token-input:focus { border-color: rgb(39,131,222); }
+  #sync-token-eye {
+    width: 34px; height: 34px;
+    background: #f7f7f7;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    color: #888888;
+  }
+  body.dark #sync-token-eye { background: #2a2a2a; border-color: #383838; color: #666; }
+  #sync-token-eye svg { width: 14px; height: 14px; pointer-events: none; }
+
+  #sync-token-hint {
+    font-size: 11px;
+    color: #aaaaaa;
+    margin-bottom: 16px;
+  }
+  #sync-token-hint a { color: rgb(39,131,222); text-decoration: none; }
+  #sync-token-hint a:hover { text-decoration: underline; }
+
+  #sync-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .sync-action-btn {
+    flex: 1;
+    height: 34px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    background: #f7f7f7;
+    color: #444444;
+    transition: background 0.1s, color 0.1s;
+  }
+  body.dark .sync-action-btn {
+    background: #2a2a2a;
+    border-color: #383838;
+    color: #aaaaaa;
+  }
+  .sync-action-btn:hover { background: #eeeeee; }
+  body.dark .sync-action-btn:hover { background: #333333; }
+  .sync-action-btn.primary {
+    background: rgb(39,131,222);
+    border-color: rgb(39,131,222);
+    color: #ffffff;
+  }
+  .sync-action-btn.primary:hover { background: rgb(30,115,200); }
+
+  #sync-status {
+    font-size: 12px;
+    min-height: 18px;
+    color: #888888;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  #sync-status.ok  { color: #4caf50; }
+  #sync-status.err { color: #e53935; }
+
+  #sync-close-btn {
+    width: 100%;
+    height: 33px;
+    background: none;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 12px;
+    font-family: inherit;
+    color: #888888;
+    cursor: pointer;
+  }
+  body.dark #sync-close-btn { border-color: #333333; color: #666666; }
+  #sync-close-btn:hover { background: #f5f5f5; }
+  body.dark #sync-close-btn:hover { background: #2a2a2a; }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Эмодзи</h1>
   <div id="size-presets">
     <button class="size-btn" data-cell="2.4rem" data-emoji="1.6rem">S</button>
     <button class="size-btn" data-cell="3rem" data-emoji="2.1rem">M</button>
     <button class="size-btn active" data-cell="4.3rem" data-emoji="3rem">L</button>
   </div>
   <button id="theme-toggle" title="Переключить тему" aria-label="Переключить тему"></button>
+  <button id="sync-btn" title="Синхронизация избранного" aria-label="Синхронизация"></button>
 </header>
+
+<!-- Sync modal -->
+<div id="sync-overlay"></div>
+<div id="sync-modal">
+  <div id="sync-title">Синхронизация ⭐️</div>
+  <div id="sync-desc">Сохраняй избранное в GitHub Gist — доступно на любом устройстве.<br>Токен хранится только в этом браузере.</div>
+  <div id="sync-token-row">
+    <input id="sync-token-input" type="password" placeholder="GitHub Personal Access Token" autocomplete="off" spellcheck="false">
+    <button id="sync-token-eye" tabindex="-1" title="Показать/скрыть токен"></button>
+  </div>
+  <div id="sync-token-hint">Нужны права <b>gist</b>. <a href="https://github.com/settings/tokens/new?scopes=gist&description=Emoji+Picker+Sync" target="_blank">Создать токен →</a></div>
+  <div id="sync-actions">
+    <button class="sync-action-btn" id="sync-pull-btn">⬆️  Загрузить</button>
+    <button class="sync-action-btn primary" id="sync-push-btn">💾 Сохранить</button>
+  </div>
+  <div id="sync-status"></div>
+  <button id="sync-close-btn">Закрыть</button>
+</div>
 
 <main id="main"></main>
 
 <div id="loader"><div class="loader-spinner"></div></div>
 <div id="toast"></div>
+
+<div id="fav-badge"><svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
 
 <div id="nav-trigger"></div>
 <div id="nav-panel">
@@ -339,22 +630,16 @@ const SVG_MOON = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
 let dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 function applyTheme() {
   document.body.classList.toggle('dark', dark);
-  document.getElementById('theme-toggle').innerHTML = dark ? SVG_SUN : SVG_MOON;
+  document.getElementById('theme-toggle').innerHTML = dark ? SVG_MOON : SVG_SUN;
 }
 applyTheme();
 
 document.getElementById('theme-toggle').addEventListener('click', () => {
   dark = !dark;
-
-  // Show loader synchronously so it paints before the theme change
   loader.classList.add('visible');
-
-  // Yield to browser to paint loader, then apply theme change
   setTimeout(() => {
     applyTheme();
-    requestAnimationFrame(() => {
-      loader.classList.remove('visible');
-    });
+    requestAnimationFrame(() => { loader.classList.remove('visible'); });
   }, 0);
 });
 
@@ -365,26 +650,36 @@ const loader = document.getElementById('loader');
 document.querySelectorAll('.size-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     if (btn.classList.contains('active')) return;
-
     document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-
-    // Show loader synchronously so it paints before the heavy reflow
     loader.classList.add('visible');
-
-    // Yield to browser to paint loader, then apply size change
     setTimeout(() => {
       root.style.setProperty('--cell-size', btn.dataset.cell);
       root.style.setProperty('--emoji-size', btn.dataset.emoji);
-      requestAnimationFrame(() => {
-        loader.classList.remove('visible');
-      });
+      requestAnimationFrame(() => { loader.classList.remove('visible'); });
     }, 0);
   });
 });
 
-// Build grid + nav
-const main = document.getElementById('main');
+// ── Favourites state ─────────────────────────────────────────────────────────
+const FAV_KEY = 'emoji-picker-favs';
+const favState = {
+  emojis: JSON.parse(localStorage.getItem(FAV_KEY) || '[]'),
+  save() { localStorage.setItem(FAV_KEY, JSON.stringify(this.emojis)); },
+  has(em) { return this.emojis.includes(em); },
+  add(em) { if (!this.has(em)) { this.emojis.unshift(em); this.save(); } },
+  remove(em) { this.emojis = this.emojis.filter(e => e !== em); this.save(); },
+  toggle(em) { this.has(em) ? this.remove(em) : this.add(em); },
+  move(fromIdx, toIdx) {
+    if (fromIdx === toIdx) return;
+    const [item] = this.emojis.splice(fromIdx, 1);
+    this.emojis.splice(toIdx, 0, item);
+    this.save();
+  }
+};
+
+// ── Nav panel ────────────────────────────────────────────────────────────────
+const mainEl = document.getElementById('main');
 const navPanel = document.getElementById('nav-panel');
 const navTrigger = document.getElementById('nav-trigger');
 
@@ -392,75 +687,103 @@ function positionNavPanel() {
   const h = navPanel.offsetHeight;
   const top = Math.round((window.innerHeight - h) / 2);
   navPanel.style.top = top + 'px';
-  // Trigger covers exactly the dash column area
   navTrigger.style.top = top + 'px';
   navTrigger.style.height = h + 'px';
 }
 window.addEventListener('resize', positionNavPanel);
+
 const navRows = [];
 let manualActiveIdx = null;
 
-EMOJIS.forEach((cat, i) => {
-  const row = document.createElement('div');
-  row.className = 'nav-row' + (i === 0 ? ' active' : '');
+const CAT_EMOJI = {
+  "Избранное":   "⭐️",
+  "Эмоции":      "😀",
+  "Части тела":  "👋",
+  "Люди":        "👨‍👩‍👦",
+  "Одежда":      "👗",
+  "Природа":     "🌿",
+  "Еда":         "🍕",
+  "Активности":  "⚽️",
+  "Путешествия": "✈️",
+  "Предметы":    "📦",
+  "Символы":     "❤️",
+  "Флаги":       "🏳️"
+};
 
-  const label = document.createElement('div');
-  label.className = 'nav-label';
-  label.textContent = cat.name;
+// Nav includes fav + all cats
+let allNavCats = [];   // array of {name, isFav}
+let categoryEls = [];  // DOM sections in order
 
-  const line = document.createElement('div');
-  line.className = 'nav-line';
+function buildNav() {
+  // Remove old nav rows (keep #nav-card)
+  navRows.forEach(r => r.remove());
+  navRows.length = 0;
 
-  row.appendChild(label);
-  row.appendChild(line);
-  navPanel.appendChild(row);
-  navRows.push(row);
+  allNavCats = [
+    ...(favState.emojis.length > 0 ? [{ name: 'Избранное', isFav: true }] : []),
+    ...EMOJIS.map(c => ({ name: c.name, isFav: false }))
+  ];
 
-  row.addEventListener('mouseenter', () => {
-    navRows.forEach((r, j) => r.classList.toggle('hovered', j === i));
-  });
+  allNavCats.forEach((cat, i) => {
+    const row = document.createElement('div');
+    row.className = 'nav-row' + (i === 0 ? ' active' : '');
 
-  row.addEventListener('mouseleave', () => {
-    row.classList.remove('hovered');
-  });
-
-  row.addEventListener('click', () => {
-    manualActiveIdx = i;
-    setActive(i);
-    const target = document.getElementById('cat-' + cat.name);
-    if (target) {
-      const headerH = document.querySelector('header').offsetHeight;
-      const top = target.getBoundingClientRect().top + window.scrollY - headerH - 12;
-      window.scrollTo({ top, behavior: 'smooth' });
+    const label = document.createElement('div');
+    label.className = 'nav-label';
+    const emo = CAT_EMOJI[cat.name] || '';
+    if (emo) {
+      const emoSpan = document.createElement('span');
+      emoSpan.className = 'nav-label-emoji';
+      emoSpan.textContent = emo;
+      label.appendChild(emoSpan);
     }
+    const textSpan = document.createElement('span');
+    textSpan.className = 'nav-label-text';
+    textSpan.textContent = cat.name;
+    label.appendChild(textSpan);
+
+    const line = document.createElement('div');
+    line.className = 'nav-line';
+
+    row.appendChild(label);
+    row.appendChild(line);
+    navPanel.appendChild(row);
+    navRows.push(row);
+
+    row.addEventListener('mouseenter', () => {
+      navRows.forEach((r, j) => r.classList.toggle('hovered', j === i));
+    });
+    row.addEventListener('mouseleave', () => { row.classList.remove('hovered'); });
+    row.addEventListener('click', () => {
+      manualActiveIdx = i;
+      setActive(i);
+      const target = document.getElementById('cat-' + cat.name);
+      if (target) {
+        const headerH = document.querySelector('header').offsetHeight;
+        const top = target.getBoundingClientRect().top + window.scrollY - headerH - 12;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    });
   });
-});
+
+  positionNavPanel();
+}
 
 navPanel.addEventListener('mouseleave', (e) => {
-  // Don't close if moving to trigger
   if (e.relatedTarget === navTrigger) return;
   navRows.forEach(r => r.classList.remove('hovered'));
   navPanel.classList.remove('open');
 });
-
-// Trigger opens the panel
-navTrigger.addEventListener('mouseenter', () => {
-  navPanel.classList.add('open');
-});
+navTrigger.addEventListener('mouseenter', () => { navPanel.classList.add('open'); });
 navTrigger.addEventListener('mouseleave', (e) => {
-  // Don't close if moving into the panel itself
   if (navPanel.contains(e.relatedTarget)) return;
   navRows.forEach(r => r.classList.remove('hovered'));
   navPanel.classList.remove('open');
 });
 
-positionNavPanel();
-
 function setActive(idx) {
   navRows.forEach((r, i) => r.classList.toggle('active', i === idx));
 }
-
-let categoryEls = [];
 
 window.addEventListener('scroll', () => {
   if (manualActiveIdx !== null) {
@@ -480,34 +803,203 @@ function getScrollActive() {
   return activeIdx;
 }
 
-EMOJIS.forEach(cat => {
+// ── Build grid ────────────────────────────────────────────────────────────────
+function buildGrid() {
+  mainEl.innerHTML = '';
+  categoryEls = [];
+
+  // Favourites section (only if non-empty)
+  if (favState.emojis.length > 0) {
+    const sec = buildSection('Избранное', favState.emojis, true);
+    mainEl.appendChild(sec);
+    categoryEls.push(sec);
+  }
+
+  EMOJIS.forEach(cat => {
+    const sec = buildSection(cat.name, cat.emojis, false);
+    mainEl.appendChild(sec);
+    categoryEls.push(sec);
+  });
+}
+
+function buildSection(name, emojis, isFav) {
   const section = document.createElement('div');
   section.className = 'category';
-  section.id = 'cat-' + cat.name;
+  section.id = 'cat-' + name;
 
   const title = document.createElement('div');
-  title.className = 'category-title';
-  title.textContent = cat.name;
+  title.className = 'category-title' + (isFav ? ' fav-title' : '');
+  if (isFav) {
+    title.innerHTML = `<svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+    title.appendChild(document.createTextNode(name));
+  } else {
+    title.textContent = name;
+  }
   section.appendChild(title);
 
   const grid = document.createElement('div');
   grid.className = 'emoji-grid';
+  section.appendChild(grid);
 
-  cat.emojis.forEach(emoji => {
-    const cell = document.createElement('div');
-    cell.className = 'emoji-cell';
-    cell.textContent = emoji;
-    cell.title = emoji;
-    cell.addEventListener('click', () => copyEmoji(emoji));
-    grid.appendChild(cell);
+  emojis.forEach(emoji => {
+    grid.appendChild(makeCell(emoji, isFav, grid));
   });
 
-  section.appendChild(grid);
-  main.appendChild(section);
-  categoryEls.push(section);
+  return section;
+}
+
+function makeCell(emoji, isFav, grid) {
+  const cell = document.createElement('div');
+  cell.className = 'emoji-cell';
+  cell.textContent = emoji;
+  cell.title = emoji;
+  if (isFav) cell.dataset.favEmoji = emoji;
+
+  cell.addEventListener('click', () => copyEmoji(emoji));
+  cell.addEventListener('contextmenu', e => {
+    e.preventDefault();
+    showBadge(cell, emoji);
+  });
+
+  if (isFav) {
+    // Pointer drag to reorder
+    cell.addEventListener('mousedown', e => {
+      if (e.button !== 0) return;
+      e.preventDefault();
+      const dx0 = e.clientX, dy0 = e.clientY;
+      function onMove(mv) {
+        if (Math.abs(mv.clientX - dx0) > 5 || Math.abs(mv.clientY - dy0) > 5) {
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+          startFavDrag(cell, emoji, grid, mv.clientX, mv.clientY);
+        }
+      }
+      function onUp() {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      }
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+  }
+
+  return cell;
+}
+
+// ── Fav drag-and-drop ─────────────────────────────────────────────────────────
+function startFavDrag(btn, emoji, grid, startX, startY) {
+  hideBadge();
+  const rect = btn.getBoundingClientRect();
+  const ghost = document.createElement('div');
+  ghost.textContent = emoji;
+  const cellSize = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--cell-size')) * 16;
+  ghost.style.cssText = `position:fixed;width:${rect.width}px;height:${rect.height}px;font-size:${rect.height * 0.65}px;display:flex;align-items:center;justify-content:center;background:${dark ? '#3a3a3a' : '#e8e8e8'};border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.25);pointer-events:none;z-index:9999;opacity:.85;left:${rect.left}px;top:${rect.top}px`;
+  document.body.appendChild(ghost);
+
+  btn.classList.add('fav-dragging');
+  grid.classList.add('fav-is-dragging');
+  const offX = startX - rect.left, offY = startY - rect.top;
+  let lastOver = null;
+
+  function onMove(e) {
+    ghost.style.left = (e.clientX - offX) + 'px';
+    ghost.style.top  = (e.clientY - offY) + 'px';
+    const over = document.elementFromPoint(e.clientX, e.clientY)?.closest('[data-fav-emoji]');
+    if (lastOver && lastOver !== over) lastOver.classList.remove('fav-drag-over');
+    if (over && over !== btn) { over.classList.add('fav-drag-over'); lastOver = over; }
+    else lastOver = null;
+  }
+
+  function onUp(e) {
+    document.removeEventListener('mousemove', onMove);
+    document.removeEventListener('mouseup', onUp);
+    ghost.remove();
+    btn.classList.remove('fav-dragging');
+    grid.classList.remove('fav-is-dragging');
+    if (lastOver) lastOver.classList.remove('fav-drag-over');
+
+    const target = document.elementsFromPoint(e.clientX, e.clientY)
+      .reduce((f, el) => f || el.closest('[data-fav-emoji]'), null);
+    if (target && target !== btn) {
+      const si = favState.emojis.indexOf(emoji);
+      const ti = favState.emojis.indexOf(target.dataset.favEmoji);
+      if (si !== -1 && ti !== -1 && si !== ti) {
+        favState.move(si, ti);
+        rebuild();
+      }
+    }
+  }
+
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('mouseup', onUp);
+}
+
+// ── Star badge ────────────────────────────────────────────────────────────────
+const favBadge = document.getElementById('fav-badge');
+let badgeAnchor = null, badgeEmoji = null, badgeHideTimer = null;
+
+function hideBadge() {
+  clearTimeout(badgeHideTimer);
+  favBadge.classList.remove('open');
+  badgeAnchor = null;
+  badgeEmoji = null;
+}
+
+function showBadge(btn, emoji) {
+  clearTimeout(badgeHideTimer);
+  if (badgeAnchor === btn) { hideBadge(); return; }
+  badgeAnchor = btn;
+  badgeEmoji = emoji;
+  favBadge.classList.toggle('is-fav', favState.has(emoji));
+
+  // Position: centred above the cell
+  const bRect = btn.getBoundingClientRect();
+  const bw = favBadge.offsetWidth || 34;
+  const bh = favBadge.offsetHeight || 34;
+  let left = bRect.left + bRect.width / 2 - bw / 2;
+  let top  = bRect.top - bh - 6;
+  // Clamp to viewport
+  left = Math.max(6, Math.min(left, window.innerWidth - bw - 6));
+  if (top < 6) top = bRect.bottom + 6;
+  favBadge.style.left = left + 'px';
+  favBadge.style.top  = top  + 'px';
+
+  favBadge.classList.remove('open');
+  void favBadge.offsetWidth; // reflow to restart animation
+  favBadge.classList.add('open');
+}
+
+favBadge.addEventListener('click', e => {
+  e.stopPropagation();
+  if (!badgeEmoji) return;
+  favState.toggle(badgeEmoji);
+  favBadge.classList.toggle('is-fav', favState.has(badgeEmoji));
+  // Small delay so the star state change is visible before badge disappears
+  setTimeout(() => {
+    hideBadge();
+    rebuild();
+  }, 320);
 });
 
-// Toast
+// Hide badge when clicking outside
+document.addEventListener('mousedown', e => {
+  if (badgeAnchor && !favBadge.contains(e.target)) hideBadge();
+});
+
+// Hide badge on scroll immediately
+window.addEventListener('scroll', () => { if (badgeAnchor) hideBadge(); }, { passive: true });
+
+// ── Rebuild (nav + grid) ──────────────────────────────────────────────────────
+function rebuild() {
+  buildNav();
+  buildGrid();
+  positionNavPanel();
+}
+
+// Initial render
+rebuild();
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
 let toastTimer;
 const toast = document.getElementById('toast');
 function showToast(msg) {
@@ -532,6 +1024,159 @@ function copyEmoji(emoji) {
     showToast(emoji + ' скопировано');
   });
 }
+// ── Sync button icon ─────────────────────────────────────────────────────────
+const SVG_SYNC = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>`;
+const SVG_EYE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>`;
+const SVG_EYE_OFF = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49"/><path d="M14.084 14.158a3 3 0 0 1-4.242-4.242"/><path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143"/><path d="m2 2 20 20"/></svg>`;
+
+document.getElementById('sync-btn').innerHTML = SVG_SYNC;
+document.getElementById('sync-token-eye').innerHTML = SVG_EYE;
+
+// ── Gist sync ────────────────────────────────────────────────────────────────
+const GIST_KEY      = 'emoji-picker-gist-token';
+const GIST_ID_KEY   = 'emoji-picker-gist-id';
+const GIST_FILENAME = 'emoji-picker-favs.json';
+
+const syncBtn      = document.getElementById('sync-btn');
+const syncOverlay  = document.getElementById('sync-overlay');
+const syncModal    = document.getElementById('sync-modal');
+const syncInput    = document.getElementById('sync-token-input');
+const syncEyeBtn   = document.getElementById('sync-token-eye');
+const syncStatus   = document.getElementById('sync-status');
+const syncPushBtn  = document.getElementById('sync-push-btn');
+const syncPullBtn  = document.getElementById('sync-pull-btn');
+const syncCloseBtn = document.getElementById('sync-close-btn');
+
+// Load saved token
+syncInput.value = localStorage.getItem(GIST_KEY) || '';
+
+function openSyncModal() {
+  syncOverlay.classList.add('open');
+  // Force reflow for transition
+  syncModal.style.display = 'block';
+  void syncModal.offsetWidth;
+  syncModal.classList.add('open');
+  setSyncStatus('');
+}
+function closeSyncModal() {
+  syncModal.classList.remove('open');
+  syncOverlay.classList.remove('open');
+  setTimeout(() => { syncModal.style.display = ''; }, 150);
+}
+
+syncBtn.addEventListener('click', openSyncModal);
+syncOverlay.addEventListener('click', closeSyncModal);
+syncCloseBtn.addEventListener('click', closeSyncModal);
+
+// Eye toggle
+let tokenVisible = false;
+syncEyeBtn.addEventListener('click', () => {
+  tokenVisible = !tokenVisible;
+  syncInput.type = tokenVisible ? 'text' : 'password';
+  syncEyeBtn.innerHTML = tokenVisible ? SVG_EYE_OFF : SVG_EYE;
+});
+
+function setSyncStatus(msg, type = '') {
+  syncStatus.textContent = msg;
+  syncStatus.className = type;
+}
+
+function getToken() {
+  const t = syncInput.value.trim();
+  if (t) localStorage.setItem(GIST_KEY, t);
+  return t;
+}
+
+async function gistRequest(method, path, body) {
+  const token = getToken();
+  if (!token) { setSyncStatus('Введи токен', 'err'); return null; }
+  const res = await fetch('https://api.github.com' + path, {
+    method,
+    headers: {
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json',
+      'X-GitHub-Api-Version': '2022-11-28'
+    },
+    body: body ? JSON.stringify(body) : undefined
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || res.statusText);
+  }
+  return res.json();
+}
+
+async function pushFavs() {
+  setSyncStatus('Сохраняю…');
+  syncPushBtn.disabled = syncPullBtn.disabled = true;
+  syncBtn.classList.add('syncing');
+  try {
+    const content = JSON.stringify({ favEmojis: favState.emojis }, null, 2);
+    const fileObj = { [GIST_FILENAME]: { content } };
+    let gistId = localStorage.getItem(GIST_ID_KEY);
+
+    if (gistId) {
+      // Try to update existing gist
+      try {
+        await gistRequest('PATCH', '/gists/' + gistId, { files: fileObj });
+      } catch {
+        gistId = null; // Gist not found, create new
+      }
+    }
+    if (!gistId) {
+      const data = await gistRequest('POST', '/gists', {
+        description: 'Emoji Picker — избранное',
+        public: false,
+        files: fileObj
+      });
+      if (!data) return;
+      gistId = data.id;
+      localStorage.setItem(GIST_ID_KEY, gistId);
+    }
+    setSyncStatus('✓ Сохранено', 'ok');
+  } catch (e) {
+    setSyncStatus('Ошибка: ' + e.message, 'err');
+  } finally {
+    syncPushBtn.disabled = syncPullBtn.disabled = false;
+    syncBtn.classList.remove('syncing');
+  }
+}
+
+async function pullFavs() {
+  setSyncStatus('Загружаю…');
+  syncPushBtn.disabled = syncPullBtn.disabled = true;
+  syncBtn.classList.add('syncing');
+  try {
+    let gistId = localStorage.getItem(GIST_ID_KEY);
+    if (!gistId) {
+      // Search for our gist by filename
+      const list = await gistRequest('GET', '/gists?per_page=100');
+      if (!list) return;
+      const found = list.find(g => g.files && g.files[GIST_FILENAME]);
+      if (!found) { setSyncStatus('Гист не найден. Сначала сохрани.', 'err'); return; }
+      gistId = found.id;
+      localStorage.setItem(GIST_ID_KEY, gistId);
+    }
+    const data = await gistRequest('GET', '/gists/' + gistId);
+    if (!data) return;
+    const raw = data.files?.[GIST_FILENAME]?.content;
+    if (!raw) { setSyncStatus('Файл не найден в гисте', 'err'); return; }
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed.favEmojis)) throw new Error('Неверный формат');
+    favState.emojis = parsed.favEmojis;
+    favState.save();
+    rebuild();
+    setSyncStatus('✓ Загружено (' + favState.emojis.length + ' эмодзи)', 'ok');
+  } catch (e) {
+    setSyncStatus('Ошибка: ' + e.message, 'err');
+  } finally {
+    syncPushBtn.disabled = syncPullBtn.disabled = false;
+    syncBtn.classList.remove('syncing');
+  }
+}
+
+syncPushBtn.addEventListener('click', pushFavs);
+syncPullBtn.addEventListener('click', pullFavs);
 </script>
 </body>
 </html>
