@@ -1191,11 +1191,7 @@ const syncEyeBtn   = document.getElementById('sync-token-eye');
 const syncStatus   = document.getElementById('sync-status');
 const syncDoBtn        = document.getElementById('sync-do-btn');
 const syncCloseBtn     = document.getElementById('sync-close-btn');
-const syncConflict     = document.getElementById('sync-conflict');
-const syncConflictInfo = document.getElementById('sync-conflict-counts');
-const conflictMergeBtn = document.getElementById('conflict-merge-btn');
-const conflictGistBtn  = document.getElementById('conflict-gist-btn');
-const conflictLocalBtn = document.getElementById('conflict-local-btn');
+
 
 // Load saved token
 syncInput.value = localStorage.getItem(GIST_KEY) || '';
@@ -1231,9 +1227,7 @@ function setSyncStatus(msg, type = '') {
   syncStatus.className = type;
 }
 
-function hideConflict() {
-  syncConflict.classList.remove('open');
-}
+function hideConflict() { /* conflict UI removed — merge is automatic */ }
 
 function getToken() {
   const t = syncInput.value.trim();
