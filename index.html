@@ -1203,7 +1203,7 @@ rebuild();
 window.addEventListener('load', () => {
   const token = localStorage.getItem(GIST_KEY);
   const everSynced = localStorage.getItem(GIST_SYNCED_KEY);
-  if (token && everSynced) syncFavs();
+  if (token && everSynced) syncFavs({ onLoad: true });
 });
 
 // ── Toast ─────────────────────────────────────────────────────────────────────
@@ -1321,11 +1321,14 @@ async function gistRequest(method, path, body) {
 
 // Conflict UI removed — tombstone merge is automatic, no user prompt needed
 
-async function syncFavs() {
+// silent=true: авто-вызов после изменений — крутим иконку только если pendingChanges
+// onLoad=true: вызов при загрузке — всегда синхронизируем (тянем облако), но без иконки
+async function syncFavs({ silent = false, onLoad = false } = {}) {
+  if (silent && !pendingChanges) return;
   hideConflict();
-  setSyncStatus('Синхронизирую…');
+  if (!silent && !onLoad) setSyncStatus('Синхронизирую…');
   syncDoBtn.disabled = true;
-  syncBtn.classList.add('syncing');
+  if (pendingChanges) syncBtn.classList.add('syncing');
   try {
     let gistId = localStorage.getItem(GIST_ID_KEY);
 
@@ -1448,13 +1451,12 @@ async function syncFavs() {
       const everSynced = localStorage.getItem(GIST_SYNCED_KEY);
       if (token && everSynced) {
         clearTimeout(autoSyncTimer);
-        autoSyncTimer = setTimeout(() => { if (pendingChanges) syncFavs(); }, 10_000);
+        autoSyncTimer = setTimeout(() => { if (pendingChanges) syncFavs({ silent: true }); }, 10_000);
       }
     }
   } finally {
     syncDoBtn.disabled = false;
-    // Снимаем класс ровно на границе оборота — через событие animationiteration,
-    // которое браузер стреляет в конце каждого полного круга.
+    isSyncLeading = true; // синхронизация завершена — следующее изменение снова leading
     const svgEl = syncBtn.querySelector('svg');
     if (svgEl && syncBtn.classList.contains('syncing')) {
       svgEl.addEventListener('animationiteration', () => {
@@ -1482,7 +1484,9 @@ let autoSyncTimer  = null;
 let isSyncLeading  = true;  // следующий вызов — "leading" (мгновенный)
 let pendingChanges = false;
 
-const DEBOUNCE_WAIT = 3000; // пауза после последнего изменения
+const DEBOUNCE_WAIT = 3000;
+
+let changesDuringSync = false; // были ли изменения пока шла leading-синхронизация
 
 function scheduleAutoSync() {
   const token = localStorage.getItem(GIST_KEY);
@@ -1493,16 +1497,16 @@ function scheduleAutoSync() {
   clearTimeout(autoSyncTimer);
 
   if (isSyncLeading) {
-    // Первое изменение — запускаем сразу
+    // Первое изменение в новой волне — запускаем сразу
     isSyncLeading = false;
-    syncFavs();
-    // После паузы сбрасываем leading, чтобы следующая "волна" тоже начиналась быстро
-    autoSyncTimer = setTimeout(() => { isSyncLeading = true; }, DEBOUNCE_WAIT);
+    changesDuringSync = false;
+    syncFavs({ silent: true });
   } else {
-    // Идут быстрые изменения — откладываем trailing sync
+    // Изменение пришло пока идёт синхронизация или в период debounce
+    changesDuringSync = true;
     autoSyncTimer = setTimeout(() => {
       isSyncLeading = true;
-      if (pendingChanges) syncFavs();
+      if (pendingChanges && changesDuringSync) syncFavs({ silent: true });
     }, DEBOUNCE_WAIT);
   }
 }
