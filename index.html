@@ -212,13 +212,13 @@
     border-radius: 6px 0 0 6px;
   }
 
-  #nav-panel { width: 170px; }
+  #nav-panel { width: 180px; }
 
   .nav-label {
     font-size: 14px;
     font-weight: 400;
     white-space: nowrap;
-    color: #888888;
+    color: #a9a9a9;
     opacity: 0;
     width: 0;
     overflow: hidden;
@@ -256,7 +256,7 @@
     width: 10px;
     height: 2px;
     border-radius: 1px;
-    background: #888888;
+    background: #cdcdcd;
     flex-shrink: 0;
     transition: background 0.15s ease;
   }
@@ -266,8 +266,8 @@
   .nav-row.active .nav-line  { background: rgb(39, 131, 222); }
 
   /* Hovered — darker in light, lighter in dark */
-  .nav-row.hovered:not(.active) .nav-label { color: #333333; }
-  .nav-row.hovered:not(.active) .nav-line  { background: #333333; }
+  .nav-row.hovered:not(.active) .nav-label { color: #575757; font-weight: 500; }
+  .nav-row.hovered:not(.active) .nav-line  { background: #575757; }
   body.dark .nav-row.hovered:not(.active) .nav-label { color: #ffffff; }
   body.dark .nav-row.hovered:not(.active) .nav-line  { background: #ffffff; }
 
