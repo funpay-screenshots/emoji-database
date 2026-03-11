@@ -610,6 +610,7 @@
   body.dark #sync-conflict-counts b { color: #f0f0f0; }
   #sync-conflict-btns {
     display: flex;
+    flex-direction: column;
     gap: 6px;
     padding: 0 10px 10px;
   }
@@ -670,7 +671,7 @@
     <div id="sync-conflict-counts"></div>
     <div id="sync-conflict-btns">
       <button class="conflict-btn primary" id="conflict-merge-btn">🔀 Объединить</button>
-      <button class="conflict-btn" id="conflict-gist-btn">☁️ Загрузить из облака</button>
+      <button class="conflict-btn" id="conflict-gist-btn">☁️ Заменить из облака</button>
       <button class="conflict-btn" id="conflict-local-btn">💾 Перезаписать в облаке</button>
     </div>
   </div>
@@ -1266,10 +1267,10 @@ async function syncFavs() {
             // Conflict — ask user
             pendingRemote = remote;
             syncConflictInfo.innerHTML =
-              `☁️ В гисте: <b>${remote.length}</b> эмодзи (+${onlyInRemote.length} уникальных)<br>` +
+              `☁️ В облаке: <b>${remote.length}</b> эмодзи (+${onlyInRemote.length} уникальных)<br>` +
               `💾 Локально: <b>${local.length}</b> эмодзи (+${onlyInLocal.length} уникальных)`;
             syncConflict.classList.add('open');
-            setSyncStatus('Выбери, что оставить:', '');
+            setSyncStatus('', '');
             return;
           }
 
@@ -1278,7 +1279,7 @@ async function syncFavs() {
             favState.emojis = remote;
             favState.save();
             rebuild();
-            setSyncStatus('✓ Обновлено из гиста (' + remote.length + ' эмодзи)', 'ok');
+            setSyncStatus('✓ Обновлено из облака (' + remote.length + ' эмодзи)', 'ok');
             return;
           }
         }
@@ -1299,7 +1300,7 @@ async function syncFavs() {
       if (!created) return;
       localStorage.setItem(GIST_ID_KEY, created.id);
     }
-    setSyncStatus('✓ Сохранено в гист (' + favState.emojis.length + ' эмодзи)', 'ok');
+    setSyncStatus('✓ Сохранено в облако (' + favState.emojis.length + ' эмодзи)', 'ok');
 
   } catch (e) {
     setSyncStatus('Ошибка: ' + e.message, 'err');
