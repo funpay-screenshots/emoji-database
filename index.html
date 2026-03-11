@@ -1325,6 +1325,7 @@ async function gistRequest(method, path, body) {
 // onLoad=true: вызов при загрузке — всегда синхронизируем (тянем облако), но без иконки
 async function syncFavs({ silent = false, onLoad = false } = {}) {
   if (silent && !pendingChanges) return;
+  console.log('[sync] syncFavs called', { silent, onLoad, pendingChanges, isSyncLeading }, new Error().stack.split('\n')[2]);
   hideConflict();
   if (!silent && !onLoad) setSyncStatus('Синхронизирую…');
   syncDoBtn.disabled = true;
