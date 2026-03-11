@@ -1325,7 +1325,6 @@ async function gistRequest(method, path, body) {
 // onLoad=true: вызов при загрузке — всегда синхронизируем (тянем облако), но без иконки
 async function syncFavs({ silent = false, onLoad = false } = {}) {
   if (silent && !pendingChanges) return;
-  console.log('[sync] syncFavs called', { silent, onLoad, pendingChanges, isSyncLeading }, new Error().stack.split('\n')[2]);
   hideConflict();
   if (!silent && !onLoad) setSyncStatus('Синхронизирую…');
   syncDoBtn.disabled = true;
@@ -1446,15 +1445,7 @@ async function syncFavs({ silent = false, onLoad = false } = {}) {
     if (!e.status || e.status !== 403 || !e.message.includes('rate limit')) {
       setSyncStatus('Ошибка: ' + e.message, 'err');
     }
-    // Если есть несинхронизированные изменения — повторим через 10 сек
-    if (pendingChanges) {
-      const token = localStorage.getItem(GIST_KEY);
-      const everSynced = localStorage.getItem(GIST_SYNCED_KEY);
-      if (token && everSynced) {
-        clearTimeout(autoSyncTimer);
-        autoSyncTimer = setTimeout(() => { if (pendingChanges) syncFavs({ silent: true }); }, 10_000);
-      }
-    }
+    // Данные в localStorage сохранены — синхронизируются при следующем изменении или открытии страницы
   } finally {
     syncDoBtn.disabled = false;
     isSyncLeading = true; // синхронизация завершена — следующее изменение снова leading
